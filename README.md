@@ -1,6 +1,6 @@
 This repo is for Android Builds of Corruption of Champions MOD by Kitteh6660 and all others involved in the project https://github.com/Kitteh6660/Corruption-of-Champions-Mod
 
-All coprights belong to their respective owners.
+All copyrights belong to their respective owners.
 
 File Naming: CoC-{Original Version}-{MOD Version}-{Commit}-{Arch}.apk
 
