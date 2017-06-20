@@ -7,10 +7,17 @@ https://github.com/Ormael7/Corruption-of-Champions
 All copyrights belong to their respective owners.
 
 
+Building apk yourserlf:
 
-File Naming for revamp: CoC_{Original Version}_mod_{MOD Version}_{Arch}.apk
-Ex: CoC_1.0.2_mod_1.4.6_arm
+PreRequisites:
+Java : https://www.java.com/en/download/
+Flash Develop: http://www.flashdevelop.org/
 
-These files are build manually so if I miss a release let me know and i'll put it up.
+Launch Flash Develop and Install Flex + Air SDK (Tools -> Install Software).
 
-I'll eventually post the script i use to build once i polish it up a bit.
+	*The script uses Air 25 if the version is updated youll need to adjust it in the script
+
+
+- Download the source code: https://github.com/Hexxah/CoC-MOD-Android-Build/archive/master.zip
+- Extract
+- Right Click Start.ps1 Run with Powershell
