@@ -29,7 +29,7 @@ switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Re
 		"No idea what to do! Choose Something"
 		exit
 		}
-		"4*" {
+	"4*" {
 		"Keeping only base files....".toString()
 		if ((Test-Path ".\Source")){rm -Recurse Source}
 		if ((Test-Path "coc*")){rm -Recurse coc*}
