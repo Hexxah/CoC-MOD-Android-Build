@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <application xmlns="http://ns.adobe.com/air/application/25.0">
   <id>com.cocxian</id>
-  <versionNumber>1.4.7</versionNumber>
+  <versionNumber>1</versionNumber>
   <filename>Corruption of Champions (Xianxia Mod)</filename>
   <description>An interactive text-based fantasy RPG intended for adult audiences. (18+)</description>
   <name>Corruption of Champions (Xianxia Mod)</name>
@@ -32,14 +32,3 @@
 	</manifest>]]></manifestAdditions>
   </android>
 </application>
-
-
-
-
-
-
-
-
-
-
-
