@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<application xmlns="http://ns.adobe.com/air/application/25.0">
+  <id>com.cocmod</id>
+  <versionNumber>1</versionNumber>
+  <filename>Corruption of Champions (Revamp Mod)</filename>
+  <description>An interactive text-based fantasy RPG intended for adult audiences. (18+)</description>
+  <name>Corruption of Champions (Revamp Mod)</name>
+  <initialWindow>
+	<title>Corruption of Champions (Revamp Mod)</title>
+    <content>CoC-AIR.swf</content>
+    <systemChrome>standard</systemChrome>
+    <transparent>false</transparent>
+    <visible>true</visible>
+    <fullScreen>true</fullScreen>
+    <autoOrients>true</autoOrients>
+    <aspectRatio>any</aspectRatio>
+    <renderMode>gpu</renderMode>
+  </initialWindow>
+  <icon>
+    <image29x29>icons/icon_29.png</image29x29>
+    <image57x57>icons/icon_57.png</image57x57>
+	<image72x72>icons/icon_72.png</image72x72>
+    <image144x144>icons/icon_144.png</image144x144>
+    <image512x512>icons/icon_512.png</image512x512>
+  </icon>
+  <customUpdateUI>false</customUpdateUI>
+  <allowBrowserInvocation>false</allowBrowserInvocation>
+  <android>
+	<manifestAdditions><![CDATA[<manifest>
+		<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+		<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="19"/>
+	</manifest>]]></manifestAdditions>
+  </android>
+</application>
+
+
+
+
+
+
+
+
+
+
+
