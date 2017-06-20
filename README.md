@@ -15,7 +15,7 @@ Flash Develop: http://www.flashdevelop.org/
 
 Launch Flash Develop and Install Flex + Air SDK (Tools -> Install Software).
 
-	*The script uses Air 25 if the version is updated youll need to adjust it in the script
+	*The script uses Air 25 if the version is updated you'll need to adjust it in the script
 
 
 - Download the source code: https://github.com/Hexxah/CoC-MOD-Android-Build/archive/master.zip
