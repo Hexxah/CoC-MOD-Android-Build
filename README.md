@@ -7,7 +7,7 @@ https://github.com/Ormael7/Corruption-of-Champions
 All copyrights belong to their respective owners.
 
 
-Building apk yourserlf:
+Building apk yourself:
 
 PreRequisites:
 Java : https://www.java.com/en/download/
