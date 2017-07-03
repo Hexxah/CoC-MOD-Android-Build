@@ -22,4 +22,5 @@ Launch Flash Develop and Install Flex + Air SDK (Tools -> Install Software).
 - Extract
 - Right Click Start.ps1 Run with Powershell
 
+
 * Some of you might need to edit the script to change the  2nd line '$FlashDevelop = ' to your FlashDevelop Directory (ending with backslash)
