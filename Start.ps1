@@ -1,7 +1,8 @@
 # Corruption of Champions Mods APK Builder
+$FlashDevelop = "C:\Program Files (x86)\FlashDevelop\"
 $sdk = $env:USERPROFILE + "\AppData\Local\FlashDevelop\Apps\flexairsdk\4.6.0+25.0.0"
-$library = "C:\Program Files (x86)\FlashDevelop\Library"
-$fdbuild = "C:\Program Files (x86)\FlashDevelop\Tools\fdbuild\fdbuild.exe"
+$library = $FlashDevelop + "Library"
+$fdbuild = $FlashDevelop + "Tools\fdbuild\fdbuild.exe"
 
 $progressPreference = 'silentlyContinue' #Hide log/verbose
 $x = 0
