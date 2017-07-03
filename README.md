@@ -21,3 +21,5 @@ Launch Flash Develop and Install Flex + Air SDK (Tools -> Install Software).
 - Download the source code: https://github.com/Hexxah/CoC-MOD-Android-Build/archive/master.zip
 - Extract
 - Right Click Start.ps1 Run with Powershell
+
+* Some of you might need to edit the script to change the  2nd line '$FlashDevelop = ' to your FlashDevelop Directory (ending with backslash)
