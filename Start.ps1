@@ -7,7 +7,7 @@ $progressPreference = 'silentlyContinue' #Hide log/verbose
 $x = 0
 $xml='revamp.xml'
 
-switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Build from Source folder `n4.Clean the Directory`n") 
+switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Build from Source folder `n4.Build apk using CoC-AIR.swf `n5.Clean the Directory`n") 
     { 
         "1*" {
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Kitteh6660/Corruption-of-Champions-Mod/releases -Headers @{"Accept"="application/json"}
@@ -18,27 +18,35 @@ switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Re
 		$x = 2
 		} 
         "3*" {
-		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
 		if (!(Test-Path ".\Source")){
 		"Sorry bud missing Source Directory".toString()
 		exit
 		}
+		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
 		$x = 3
 		}  
-        default {
-		"No idea what to do! Choose Something"
+		"4*" {
+		if (!(Test-Path ".\CoC-AIR.swf")){
+		"Missing CoC-AIR.swf".toString()
 		exit
 		}
-	"4*" {
+		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
+		$x = 4
+		}
+		"5*" {
 		"Keeping only base files....".toString()
 		if ((Test-Path ".\Source")){rm -Recurse Source}
 		if ((Test-Path "coc*")){rm -Recurse coc*}
 		exit
-		} 
+		}
+		default {
+		"No idea what to do! Choose Something"
+		exit
+		}
     }
 	
 #check url for the latest release and version number if not building from source folder
-if (!($x -eq 3)){
+if (($x -eq 1 -Or $x -eq 2)){
 # The releases are returned in the format {"id":3622206,"tag_name":"hello-1.0.0.11",...}, we have to extract the the version number and url.
 $json = $latestRelease.Content | ConvertFrom-Json
 $latestVersion = $json.tag_name[0]
@@ -61,11 +69,11 @@ function Setup
 	mv coc\* Source
 	rm coc,coc.zip
 	
-	Build
+	BuildSwf
 	}
-
+	
 #Builds the Stuff
-function Build
+function BuildSwf
 {
 	(Get-Content $xml) -replace '<versionNumber>(.*)</versionNumber>', ('<versionNumber>'+((${latestVersion}) -split "_")[-1]+'</versionNumber>')| Set-Content $xml
 	
@@ -73,15 +81,25 @@ function Build
 	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 25.0" -compiler $sdk -library $library
 	cp Source\CoC-AIR.swf CoC-AIR.swf
 	
+	BuildApk
+}
+
+function BuildApk
+{
 	"Building Arm APK".toString()
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_arm.apk $xml CoC-AIR.swf icons
 	
 	"Building x86 APK".toString()
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -arch x86 -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_x86.apk $xml CoC-AIR.swf icons
+	
+	exit
 }
 
 #If not building from source setup everything
-if (!($x -eq 3)){
-	Setup
+if ($x -eq 4){
+	BuildApk
 }
-Else{Build}
+elseif ($x -eq 3){
+	BuildSwf
+}
+Else{Setup}
