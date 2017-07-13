@@ -53,7 +53,7 @@ $json = $latestRelease.Content | ConvertFrom-Json
 $latestVersion = $json.tag_name[0]
 $latestUrl = $json.zipball_url[0]
 
-if ($x=2){$xml = 'xianxia.xml'}
+if ($x -eq 2){$xml = 'xianxia.xml'}
 }
 
 #Downloads stuff and sets up directory when called
