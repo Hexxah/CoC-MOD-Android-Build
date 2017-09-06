@@ -11,7 +11,8 @@ https://github.com/Ormael7/Corruption-of-Champions
 All copyrights belong to their respective owners.
 # Building apk yourself:
 #### PreRequisites:
-Java : https://www.java.com/en/download/
+Java JRE : https://www.java.com/en/download/
+
 Flash Develop: http://www.flashdevelop.org/
 
 Launch Flash Develop and Install Flex + Air SDK (Tools -> Install Software).
