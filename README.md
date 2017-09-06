@@ -3,7 +3,9 @@
 APKs can be found on the [Releases](https://github.com/Hexxah/CoC-MOD-Android-Build/releases) page.
 
 This repo is for Android Builds of Corruption of Champions mods (Revamp and Xianxia):
+
 https://github.com/Kitteh6660/Corruption-of-Champions-Mod
+
 https://github.com/Ormael7/Corruption-of-Champions
 
 All copyrights belong to their respective owners.
