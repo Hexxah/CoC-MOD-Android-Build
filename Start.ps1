@@ -1,8 +1,9 @@
 # Corruption of Champions Mods APK Builder
 $FlashDevelop = "C:\Program Files (x86)\FlashDevelop\"
-$sdk = $env:USERPROFILE + "\AppData\Local\FlashDevelop\Apps\flexairsdk\4.6.0+25.0.0"
+$sdk = $env:USERPROFILE + "\AppData\Local\FlashDevelop\Apps\flexairsdk\4.6.0+26.0.0"
 $library = $FlashDevelop + "Library"
 $fdbuild = $FlashDevelop + "Tools\fdbuild\fdbuild.exe"
+$project = ".\Source\Corruption-of-Champions-FD-AIR.as3proj"
 
 $progressPreference = 'silentlyContinue' #Hide log/verbose
 $x = 0
@@ -70,6 +71,12 @@ function Setup
 	mv coc\* Source
 	rm coc,coc.zip
 	
+	# Edit xml to include mx swc from sdk ( otherwise gives ScrollControlBase not found error)
+	$as3project = [xml](Get-Content $project)
+	$as3project.project.libraryPaths.ChildNodes.Item(0).path = "lib\bin"
+	$as3project.project.libraryPaths.ChildNodes.Item(1).path = $sdk+"\frameworks\libs\mx"
+	$as3project.Save((Resolve-Path $project))
+	
 	BuildSwf
 	}
 	
@@ -79,7 +86,7 @@ function BuildSwf
 	(Get-Content $xml) -replace '<versionNumber>(.*)</versionNumber>', ('<versionNumber>'+((${latestVersion}) -split "_")[-1]+'</versionNumber>')| Set-Content $xml
 	
 	"Compiling/Building SWF".toString()
-	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 25.0" -compiler $sdk -library $library
+	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 26.0" -compiler $sdk -library $library
 	cp Source\CoC-AIR.swf CoC-AIR.swf
 	
 	BuildApk
