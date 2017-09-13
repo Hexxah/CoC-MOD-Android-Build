@@ -23,3 +23,10 @@ Launch Flash Develop and Install Flex + Air SDK (Tools -> Install Software).
 - Extract
 - Right Click Start.ps1 Run with Powershell
 
+# Bug Reports + Others
+If you find any bugs to do with the android version, crashes, not installing or the script feel free to open an issue here NOT on the Revamp or Xianxia page since the android builds aren't officially supported by them.
+
+If you see issues with scenes or other game related error that can be replicated on the SWF (PC) those would belong on the official repos.
+
+If you would like to help in someway or have any ideas feel free to contact me.
+I have no idea about flash coding but can understand basic code and some languages (Python, Java). I do this on my free time so I might not be able to reply right away. P.S. Username on COC Discord: Drack
