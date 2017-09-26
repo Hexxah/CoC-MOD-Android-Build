@@ -23,6 +23,11 @@ Launch Flash Develop and Install Flex + Air SDK (Tools -> Install Software).
 - Extract
 - Right Click Start.ps1 Run with Powershell
 
+# FAQ
+Image Packs do not work on Android Builds, the only way i know to fix is this is to rewrite the code so that it embeds the image when compiling the swf, unfortunately that would mean the size of the file would increase quite considerable(100mb+) and might slow dow the android version more :P
+
+It is possible to install both mods and the official versions at the same time. Regular Saves should be fine, only Save to File might cause issues since all three would share the location and might cause issues if imported in the wrong version.
+
 # Bug Reports + Others
 If you find any bugs to do with the android version, crashes, not installing or the script feel free to open an issue here NOT on the Revamp or Xianxia page since the android builds aren't officially supported by them.
 
