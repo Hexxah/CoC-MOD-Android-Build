@@ -1,6 +1,6 @@
 # Corruption of Champions Mods APK Builder
 $FlashDevelop = "C:\Program Files (x86)\FlashDevelop\"
-$sdk = $env:USERPROFILE + "\AppData\Local\FlashDevelop\Apps\flexairsdk\4.6.0+26.0.0"
+$sdk = $env:USERPROFILE + "\AppData\Local\FlashDevelop\Apps\flexairsdk\4.6.0+27.0.0"
 $library = $FlashDevelop + "Library"
 $fdbuild = $FlashDevelop + "Tools\fdbuild\fdbuild.exe"
 $project = ".\Source\Corruption-of-Champions-FD-AIR.as3proj"
@@ -25,6 +25,7 @@ switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Re
 		exit
 		}
 		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
+		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
 		$x = 3
 		}  
 		"4*" {
@@ -33,6 +34,7 @@ switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Re
 		exit
 		}
 		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
+		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
 		$x = 4
 		}
 		"5*" {
@@ -75,6 +77,8 @@ function Setup
 	$as3project = [xml](Get-Content $project)
 	$as3project.project.libraryPaths.ChildNodes.Item(0).path = "lib\bin"
 	$as3project.project.libraryPaths.ChildNodes.Item(1).path = $sdk+"\frameworks\libs\mx"
+	$as3project.project.output.ChildNodes.Item(6).version = "27"
+	$as3project.project.output.ChildNodes.Item(7).minorVersion = "0"
 	$as3project.Save((Resolve-Path $project))
 	
 	BuildSwf
@@ -86,7 +90,7 @@ function BuildSwf
 	(Get-Content $xml) -replace '<versionNumber>(.*)</versionNumber>', ('<versionNumber>'+((${latestVersion}) -split "_")[-1]+'</versionNumber>')| Set-Content $xml
 	
 	"Compiling/Building SWF".toString()
-	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 26.0" -compiler $sdk -library $library
+	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 27.0" -compiler $sdk -library $library
 	cp Source\CoC-AIR.swf CoC-AIR.swf
 	
 	BuildApk
