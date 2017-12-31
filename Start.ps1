@@ -21,7 +21,7 @@ switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Re
 	} 
     "3*" {
 		if (!(Test-Path ".\Source")){
-		    "Sorry bud missing Source Directory".toString()
+		    Write-Output "Sorry bud missing Source Directory"
 		    exit
 		}
 		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
@@ -30,7 +30,7 @@ switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Re
 	}  
 	"4*" {
 		if (!(Test-Path ".\CoC-AIR.swf")){
-		    "Missing CoC-AIR.swf".toString()
+		    Write-Output "Missing CoC-AIR.swf"
 		    exit
 		}
 		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
@@ -38,7 +38,7 @@ switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Re
 		$x = 4
 	}
 	"5*" {
-		"Keeping only base files....".toString()
+		Write-Output "Keeping only base files...."
 		if ((Test-Path ".\Source")){rm -Recurse Source}
 		if ((Test-Path "coc*")){rm -Recurse coc*}
 		exit
@@ -62,10 +62,10 @@ if (($x -eq 1 -Or $x -eq 2)){
 #Downloads stuff and sets up directory when called
 function Setup
 {
-	"Downloading Latest Release ...".toString()
+	Write-Output "Downloading Latest Release ..."
 	Invoke-WebRequest $latestUrl -OutFile coc.zip
 	
-	"Extracting Archive ...".toString()
+	Write-Output "Extracting Archive ..."
 	Expand-Archive coc.zip
 	
 	# just renaming and moving stuff
@@ -89,7 +89,7 @@ function BuildSwf
 {
 	(Get-Content $xml) -replace '<versionNumber>(.*)</versionNumber>', ('<versionNumber>'+((${latestVersion}) -split "_")[-1]+'</versionNumber>')| Set-Content $xml
 	
-	"Compiling/Building SWF".toString()
+	Write-Output "Compiling/Building SWF"
 	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 27.0" -compiler $sdk -library $library
 	cp Source\CoC-AIR.swf CoC-AIR.swf
 	
@@ -98,10 +98,10 @@ function BuildSwf
 
 function BuildApk
 {
-	"Building Arm APK".toString()
+	Write-Output "Building Arm APK"
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_arm.apk $xml CoC-AIR.swf icons
 	
-	"Building x86 APK".toString()
+	Write-Output "Building x86 APK"
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -arch x86 -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_x86.apk $xml CoC-AIR.swf icons
 	
 	exit
