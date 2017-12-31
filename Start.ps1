@@ -10,53 +10,53 @@ $x = 0
 $xml='revamp.xml'
 
 switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Build from Source folder `n4.Build apk using CoC-AIR.swf `n5.Clean the Directory`n") 
-    { 
-        "1*" {
+{ 
+    "1*" {
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Kitteh6660/Corruption-of-Champions-Mod/releases -Headers @{"Accept"="application/json"}
 		$x = 1
-		} 
-        "2*" {
+	} 
+    "2*" {
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Ormael7/Corruption-of-Champions/releases -Headers @{"Accept"="application/json"}
 		$x = 2
-		} 
-        "3*" {
+	} 
+    "3*" {
 		if (!(Test-Path ".\Source")){
-		"Sorry bud missing Source Directory".toString()
-		exit
+		    "Sorry bud missing Source Directory".toString()
+		    exit
 		}
 		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
 		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
 		$x = 3
-		}  
-		"4*" {
+	}  
+	"4*" {
 		if (!(Test-Path ".\CoC-AIR.swf")){
-		"Missing CoC-AIR.swf".toString()
-		exit
+		    "Missing CoC-AIR.swf".toString()
+		    exit
 		}
 		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
 		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
 		$x = 4
-		}
-		"5*" {
+	}
+	"5*" {
 		"Keeping only base files....".toString()
 		if ((Test-Path ".\Source")){rm -Recurse Source}
 		if ((Test-Path "coc*")){rm -Recurse coc*}
 		exit
-		}
-		default {
+	}
+	default {
 		"No idea what to do! Choose Something"
 		exit
-		}
-    }
+	}
+}
 	
 #check url for the latest release and version number if not building from source folder
 if (($x -eq 1 -Or $x -eq 2)){
 # The releases are returned in the format {"id":3622206,"tag_name":"hello-1.0.0.11",...}, we have to extract the the version number and url.
-$json = $latestRelease.Content | ConvertFrom-Json
-$latestVersion = $json.tag_name[0]
-$latestUrl = $json.zipball_url[0]
+    $json = $latestRelease.Content | ConvertFrom-Json
+    $latestVersion = $json.tag_name[0]
+    $latestUrl = $json.zipball_url[0]
 
-if ($x -eq 2){$xml = 'xianxia.xml'}
+    if ($x -eq 2){$xml = 'xianxia.xml'}
 }
 
 #Downloads stuff and sets up directory when called
@@ -82,7 +82,7 @@ function Setup
 	$as3project.Save((Resolve-Path $project))
 	
 	BuildSwf
-	}
+}
 	
 #Builds the Stuff
 function BuildSwf
