@@ -1,6 +1,11 @@
 # Corruption of Champions Mods APK Builder
-$FlashDevelop = "C:\Program Files (x86)\FlashDevelop\"
-$sdk = $env:USERPROFILE + "\AppData\Local\FlashDevelop\Apps\flexairsdk\4.6.0+27.0.0"
+$FlashDevelop = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*|where -p "displayname" -match "flashDevelop").uninstallstring
+if($FlashDevelop -eq $null){
+    $FlashDevelop = (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*|where -p "displayname" -match "flashDevelop").uninstallstring
+}
+$FlashDevelop = $FlashDevelop -replace "uninstall.exe",''
+$sdk = $env:FLEX_HOME
+$airNameSpace = ([xml](get-content $sdk\airsdk.xml)).airSdk.applicationNamespaces.versionMap[0].descriptorNamespace
 $library = $FlashDevelop + "Library"
 $fdbuild = $FlashDevelop + "Tools\fdbuild\fdbuild.exe"
 $project = ".\Source\Corruption-of-Champions-FD-AIR.as3proj"
@@ -88,7 +93,7 @@ function Setup
 function BuildSwf
 {
 	(Get-Content $xml) -replace '<versionNumber>(.*)</versionNumber>', ('<versionNumber>'+((${latestVersion}) -split "_")[-1]+'</versionNumber>')| Set-Content $xml
-	
+
 	Write-Output "Compiling/Building SWF"
 	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 27.0" -compiler $sdk -library $library
 	cp Source\CoC-AIR.swf CoC-AIR.swf
@@ -98,6 +103,10 @@ function BuildSwf
 
 function BuildApk
 {
+    $myXml = [xml](Get-Content $xml)
+    $myxml.application.xmlns = $airNameSpace
+    $myXml.Save((Resolve-Path $xml))
+
 	Write-Output "Building Arm APK"
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_arm.apk $xml CoC-AIR.swf icons
 	
