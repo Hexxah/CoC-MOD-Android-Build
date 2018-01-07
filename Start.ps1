@@ -11,62 +11,16 @@ $fdbuild = $FlashDevelop + "Tools\fdbuild\fdbuild.exe"
 $project = ".\Source\Corruption-of-Champions-FD-AIR.as3proj"
 
 $progressPreference = 'silentlyContinue' #Hide log/verbose
-$x = 0
-$xml='revamp.xml'
-
-switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Build from Source folder `n4.Build apk using CoC-AIR.swf `n5.Clean the Directory`n") 
-{ 
-    "1*" {
-		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Kitteh6660/Corruption-of-Champions-Mod/releases -Headers @{"Accept"="application/json"}
-		$x = 1
-	} 
-    "2*" {
-		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Ormael7/Corruption-of-Champions/releases -Headers @{"Accept"="application/json"}
-		$x = 2
-	} 
-    "3*" {
-		if (!(Test-Path ".\Source")){
-		    Write-Output "Sorry bud missing Source Directory"
-		    exit
-		}
-		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
-		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
-		$x = 3
-	}  
-	"4*" {
-		if (!(Test-Path ".\CoC-AIR.swf")){
-		    Write-Output "Missing CoC-AIR.swf"
-		    exit
-		}
-		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
-		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
-		$x = 4
-	}
-	"5*" {
-		Write-Output "Keeping only base files...."
-		if ((Test-Path ".\Source")){Remove-Item -Recurse Source}
-		if ((Test-Path "coc*")){Remove-Item -Recurse coc*}
-		exit
-	}
-	default {
-		"No idea what to do! Choose Something"
-		exit
-	}
-}
-	
-#check url for the latest release and version number if not building from source folder
-if (($x -eq 1 -Or $x -eq 2)){
-# The releases are returned in the format {"id":3622206,"tag_name":"hello-1.0.0.11",...}, we have to extract the the version number and url.
-    $json = $latestRelease.Content | ConvertFrom-Json
-    $latestVersion = $json.tag_name[0]
-    $latestUrl = $json.zipball_url[0]
-
-    if ($x -eq 2){$xml = 'xianxia.xml'}
-}
 
 #Downloads stuff and sets up directory when called
 function Setup
 {
+	#check url for the latest release and version number if not building from source folder
+	# The releases are returned in the format {"id":3622206,"tag_name":"hello-1.0.0.11",...}, we have to extract the the version number and url.
+	$json = $latestRelease.Content | ConvertFrom-Json
+    $Script:latestVersion = $json.tag_name[0]
+	$latestUrl = $json.zipball_url[0]
+	
 	Write-Output "Downloading Latest Release ..."
 	Invoke-WebRequest $latestUrl -OutFile coc.zip
 	
@@ -116,11 +70,44 @@ function BuildApk
 	exit
 }
 
-#If not building from source setup everything
-if ($x -eq 4){
-	BuildApk
+switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Build from Source folder `n4.Build apk using CoC-AIR.swf `n5.Clean the Directory`n") 
+{ 
+    "1*" {
+		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Kitteh6660/Corruption-of-Champions-Mod/releases -Headers @{"Accept"="application/json"}
+		$xml='revamp.xml'
+		setup
+	}
+    "2*" {
+		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Ormael7/Corruption-of-Champions/releases -Headers @{"Accept"="application/json"}
+		$xml = 'xianxia.xml'
+		setup
+	}
+    "3*" {
+		if (!(Test-Path ".\Source")){
+		    Write-Output "Sorry bud missing Source Directory"
+		    exit
+		}
+		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
+		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
+		BuildSwf
+	}
+	"4*" {
+		if (!(Test-Path ".\CoC-AIR.swf")){
+		    Write-Output "Missing CoC-AIR.swf"
+		    exit
+		}
+		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
+		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
+		BuildApk
+	}
+	"5*" {
+		Write-Output "Keeping only base files...."
+		if ((Test-Path ".\Source")){Remove-Item -Recurse Source}
+		if ((Test-Path "coc*")){Remove-Item -Recurse coc*}
+		exit
+	}
+	default {
+		"No idea what to do! Choose Something"
+		exit
+	}
 }
-elseif ($x -eq 3){
-	BuildSwf
-}
-Else{Setup}
