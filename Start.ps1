@@ -1,6 +1,11 @@
 # Corruption of Champions Mods APK Builder
-$FlashDevelop = "C:\Program Files (x86)\FlashDevelop\"
-$sdk = $env:USERPROFILE + "\AppData\Local\FlashDevelop\Apps\flexairsdk\4.6.0+27.0.0"
+$FlashDevelop = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*|where -p "displayname" -match "flashDevelop").uninstallstring
+if($FlashDevelop -eq $null){
+    $FlashDevelop = (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*|where -p "displayname" -match "flashDevelop").uninstallstring
+}
+$FlashDevelop = $FlashDevelop -replace "uninstall.exe",''
+$sdk = $env:FLEX_HOME
+$airNameSpace = ([xml](get-content $sdk\airsdk.xml)).airSdk.applicationNamespaces.versionMap[0].descriptorNamespace
 $library = $FlashDevelop + "Library"
 $fdbuild = $FlashDevelop + "Tools\fdbuild\fdbuild.exe"
 $project = ".\Source\Corruption-of-Champions-FD-AIR.as3proj"
@@ -10,62 +15,62 @@ $x = 0
 $xml='revamp.xml'
 
 switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Build from Source folder `n4.Build apk using CoC-AIR.swf `n5.Clean the Directory`n") 
-    { 
-        "1*" {
+{ 
+    "1*" {
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Kitteh6660/Corruption-of-Champions-Mod/releases -Headers @{"Accept"="application/json"}
 		$x = 1
-		} 
-        "2*" {
+	} 
+    "2*" {
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Ormael7/Corruption-of-Champions/releases -Headers @{"Accept"="application/json"}
 		$x = 2
-		} 
-        "3*" {
+	} 
+    "3*" {
 		if (!(Test-Path ".\Source")){
-		"Sorry bud missing Source Directory".toString()
-		exit
+		    Write-Output "Sorry bud missing Source Directory"
+		    exit
 		}
 		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
 		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
 		$x = 3
-		}  
-		"4*" {
+	}  
+	"4*" {
 		if (!(Test-Path ".\CoC-AIR.swf")){
-		"Missing CoC-AIR.swf".toString()
-		exit
+		    Write-Output "Missing CoC-AIR.swf"
+		    exit
 		}
 		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
 		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
 		$x = 4
-		}
-		"5*" {
-		"Keeping only base files....".toString()
+	}
+	"5*" {
+		Write-Output "Keeping only base files...."
 		if ((Test-Path ".\Source")){rm -Recurse Source}
 		if ((Test-Path "coc*")){rm -Recurse coc*}
 		exit
-		}
-		default {
+	}
+	default {
 		"No idea what to do! Choose Something"
 		exit
-		}
-    }
+	}
+}
 	
 #check url for the latest release and version number if not building from source folder
 if (($x -eq 1 -Or $x -eq 2)){
 # The releases are returned in the format {"id":3622206,"tag_name":"hello-1.0.0.11",...}, we have to extract the the version number and url.
-$json = $latestRelease.Content | ConvertFrom-Json
-$latestVersion = $json.tag_name[0]
-$latestUrl = $json.zipball_url[0]
+    $json = $latestRelease.Content | ConvertFrom-Json
+    $latestVersion = $json.tag_name[0]
+    $latestUrl = $json.zipball_url[0]
 
-if ($x -eq 2){$xml = 'xianxia.xml'}
+    if ($x -eq 2){$xml = 'xianxia.xml'}
 }
 
 #Downloads stuff and sets up directory when called
 function Setup
 {
-	"Downloading Latest Release ...".toString()
+	Write-Output "Downloading Latest Release ..."
 	Invoke-WebRequest $latestUrl -OutFile coc.zip
 	
-	"Extracting Archive ...".toString()
+	Write-Output "Extracting Archive ..."
 	Expand-Archive coc.zip
 	
 	# just renaming and moving stuff
@@ -82,14 +87,14 @@ function Setup
 	$as3project.Save((Resolve-Path $project))
 	
 	BuildSwf
-	}
+}
 	
 #Builds the Stuff
 function BuildSwf
 {
 	(Get-Content $xml) -replace '<versionNumber>(.*)</versionNumber>', ('<versionNumber>'+((${latestVersion}) -split "_")[-1]+'</versionNumber>')| Set-Content $xml
-	
-	"Compiling/Building SWF".toString()
+
+	Write-Output "Compiling/Building SWF"
 	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 27.0" -compiler $sdk -library $library
 	cp Source\CoC-AIR.swf CoC-AIR.swf
 	
@@ -98,10 +103,14 @@ function BuildSwf
 
 function BuildApk
 {
-	"Building Arm APK".toString()
+    $myXml = [xml](Get-Content $xml)
+    $myxml.application.xmlns = $airNameSpace
+    $myXml.Save((Resolve-Path $xml))
+
+	Write-Output "Building Arm APK"
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_arm.apk $xml CoC-AIR.swf icons
 	
-	"Building x86 APK".toString()
+	Write-Output "Building x86 APK"
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -arch x86 -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_x86.apk $xml CoC-AIR.swf icons
 	
 	exit
