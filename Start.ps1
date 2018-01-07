@@ -1,7 +1,7 @@
 # Corruption of Champions Mods APK Builder
-$FlashDevelop = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*|where -p "displayname" -match "flashDevelop").uninstallstring
+$FlashDevelop = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*|Where-Object -p "displayname" -match "flashDevelop").uninstallstring
 if($FlashDevelop -eq $null){
-    $FlashDevelop = (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*|where -p "displayname" -match "flashDevelop").uninstallstring
+    $FlashDevelop = (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*|Where-Object -p "displayname" -match "flashDevelop").uninstallstring
 }
 $FlashDevelop = $FlashDevelop -replace "uninstall.exe",''
 $sdk = $env:FLEX_HOME
@@ -44,8 +44,8 @@ switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Re
 	}
 	"5*" {
 		Write-Output "Keeping only base files...."
-		if ((Test-Path ".\Source")){rm -Recurse Source}
-		if ((Test-Path "coc*")){rm -Recurse coc*}
+		if ((Test-Path ".\Source")){Remove-Item -Recurse Source}
+		if ((Test-Path "coc*")){Remove-Item -Recurse coc*}
 		exit
 	}
 	default {
@@ -74,9 +74,9 @@ function Setup
 	Expand-Archive coc.zip
 	
 	# just renaming and moving stuff
-	if ((Test-Path ".\Source")){rm -Recurse Source}
-	mv coc\* Source
-	rm coc,coc.zip
+	if ((Test-Path ".\Source")){Remove-Item -Recurse Source}
+	Move-Item coc\* Source
+	Remove-Item coc,coc.zip
 	
 	# Edit xml to include mx swc from sdk ( otherwise gives ScrollControlBase not found error)
 	$as3project = [xml](Get-Content $project)
@@ -96,7 +96,7 @@ function BuildSwf
 
 	Write-Output "Compiling/Building SWF"
 	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 27.0" -compiler $sdk -notrace -library $library
-	cp Source\CoC-AIR.swf CoC-AIR.swf
+	Copy-Item Source\CoC-AIR.swf CoC-AIR.swf
 	
 	BuildApk
 }
