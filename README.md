@@ -46,6 +46,17 @@ powershell
 Set-ExecutionPolicy unrestricted
 ```
 
+#### If build with PowerShell does not work
+If you get errors like "Error: Java heap space" or "dx tool failed", you probably have to allocate more Java memory:
+- open the jvm.config file inside your Flex Air SDK directory and set at least 512 Mb
+```
+java.args=-Xmx512m
+```
+- create the _JAVA_OPTIONS system environment variable 
+```
+_JAVA_OPTIONS=-Xmx512m
+```
+
 ## FAQ
 
 Image Packs do not work on Android Builds, the only way I know to fix is this is to rewrite the code so that it embeds the image when compiling the swf, unfortunately that would mean the size of the file would increase quite considerable(100mb+) and might slow down the android version more :P
