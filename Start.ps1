@@ -18,7 +18,7 @@ function Setup
 	#check url for the latest release and version number if not building from source folder
 	# The releases are returned in the format {"id":3622206,"tag_name":"hello-1.0.0.11",...}, we have to extract the the version number and url.
 	$json = $latestRelease.Content | ConvertFrom-Json
-    $Script:latestVersion = $json.tag_name[0]
+	$Script:latestVersion = $json.tag_name[0]
 	$latestUrl = $json.zipball_url[0]
 	
 	Write-Output "Downloading Latest Release ..."
