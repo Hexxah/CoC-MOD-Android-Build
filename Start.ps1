@@ -73,12 +73,14 @@ function BuildApk
 switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Build from Source folder `n4.Build apk using CoC-AIR.swf `n5.Clean the Directory`n") 
 { 
     "1*" {
+		# Needed to avoid "Invoke-WebRequest : The request was aborted: Could not create SSL/TLS secure channel."
 		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Kitteh6660/Corruption-of-Champions-Mod/releases -Headers @{"Accept"="application/json"}
 		$xml='revamp.xml'
 		setup
 	}
     "2*" {
+		# Needed to avoid "Invoke-WebRequest : The request was aborted: Could not create SSL/TLS secure channel."
 		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Ormael7/Corruption-of-Champions/releases -Headers @{"Accept"="application/json"}
 		$xml = 'xianxia.xml'
