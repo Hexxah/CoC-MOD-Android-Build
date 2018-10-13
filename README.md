@@ -23,6 +23,7 @@ All copyrights belong to their respective owners.
 1. Launch Flash Develop and Install Flex + Air SDK (Tools -> Install Software).
 1. Download the [source code](https://github.com/Hexxah/CoC-MOD-Android-Build/archive/master.zip)
 1. Extract
+1. Verify that the environment variable FLEX_HOME exists and contains the Flex Air SDK directory path
 1. Right Click Start.ps1 Run with Powershell
 
 #### If Run with PowerShell does not work
@@ -44,6 +45,16 @@ PowerShell -executionPolicy bypass .\Start.ps1
 ```powershell
 powershell
 Set-ExecutionPolicy unrestricted
+```
+
+#### Build Errors
+- if you get "Java heap space" errors, try to allocate more java memory. Open the jvm.config file inside the %FLEX_HOME%\bin directory and update the java.args variable.
+```
+java.args=-Xmx512m
+```
+- if you get "dx tool failed" errors, additionally create the _JAVA_OPTIONS system environment variable and allocate enough java memory.
+```
+_JAVA_OPTIONS=-Xmx512m
 ```
 
 ## FAQ

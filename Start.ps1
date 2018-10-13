@@ -18,7 +18,7 @@ function Setup
 	#check url for the latest release and version number if not building from source folder
 	# The releases are returned in the format {"id":3622206,"tag_name":"hello-1.0.0.11",...}, we have to extract the the version number and url.
 	$json = $latestRelease.Content | ConvertFrom-Json
-    $Script:latestVersion = $json.tag_name[0]
+	$Script:latestVersion = $json.tag_name[0]
 	$latestUrl = $json.zipball_url[0]
 	
 	Write-Output "Downloading Latest Release ..."
@@ -46,7 +46,7 @@ function Setup
 #Builds the Stuff
 function BuildSwf
 {
-	(Get-Content $xml) -replace '<versionNumber>(.*)</versionNumber>', ('<versionNumber>'+((${latestVersion}) -split "_")[-1]+'</versionNumber>')| Set-Content $xml
+	[Regex]::Replace( $(Get-Content $xml), '(?s)/<versionNumber>.*?</versionNumber>/', ('<versionNumber>'+((${latestVersion}) -split "_")[-1]+'</versionNumber>') ) | Set-Content $xml
 
 	Write-Output "Compiling/Building SWF"
 	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 27.0" -compiler $sdk -notrace -library $library
@@ -73,11 +73,15 @@ function BuildApk
 switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Build from Source folder `n4.Build apk using CoC-AIR.swf `n5.Clean the Directory`n") 
 { 
     "1*" {
+		# Needed to avoid "Invoke-WebRequest : The request was aborted: Could not create SSL/TLS secure channel."
+		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Kitteh6660/Corruption-of-Champions-Mod/releases -Headers @{"Accept"="application/json"}
 		$xml='revamp.xml'
 		setup
 	}
     "2*" {
+		# Needed to avoid "Invoke-WebRequest : The request was aborted: Could not create SSL/TLS secure channel."
+		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Ormael7/Corruption-of-Champions/releases -Headers @{"Accept"="application/json"}
 		$xml = 'xianxia.xml'
 		setup
