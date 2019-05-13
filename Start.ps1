@@ -36,7 +36,7 @@ function Setup
 	$as3project = [xml](Get-Content $project)
 	$as3project.project.libraryPaths.ChildNodes.Item(0).path = "lib\bin"
 	$as3project.project.libraryPaths.ChildNodes.Item(1).path = $sdk+"\frameworks\libs\mx"
-	$as3project.project.output.ChildNodes.Item(6).version = "27"
+	$as3project.project.output.ChildNodes.Item(6).version = ([xml](get-content $sdk\airsdk.xml)).airSdk.applicationNamespaces.versionMap[0].swfVersion
 	$as3project.project.output.ChildNodes.Item(7).minorVersion = "0"
 	$as3project.Save((Resolve-Path $project))
 	
@@ -47,7 +47,7 @@ function Setup
 function BuildSwf
 {
 	Write-Output "Compiling/Building SWF"
-	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 27.0" -compiler $sdk -notrace -library $library
+	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -compiler $sdk -notrace -library $library
 	Copy-Item Source\CoC-AIR.swf CoC-AIR.swf
 	
 	BuildApk
@@ -66,13 +66,17 @@ function BuildApk
     	$myxml.application.xmlns = $airNameSpace
 	$myxml.application.versionNumber = [string]$versionNumber
     	$myXml.Save((Resolve-Path $xml))
-
+	
+	#Change Icons based on Build
+	cp .\icons\$xml\* .\icons\ -force
+	
 	Write-Output "Building Arm APK"
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_arm.apk $xml CoC-AIR.swf icons
 	
 	Write-Output "Building x86 APK"
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -arch x86 -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_x86.apk $xml CoC-AIR.swf icons
 	
+	cp .\icons\Default\* .\icons\ -force
 	exit
 }
 
