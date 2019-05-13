@@ -50,11 +50,11 @@ Set-ExecutionPolicy unrestricted
 #### Build Errors
 - if you get "Java heap space" errors, try to allocate more java memory. Open the jvm.config file inside the %FLEX_HOME%\bin directory and update the java.args variable.
 ```
-java.args=-Xmx512m
+java.args=-Xmx1024m
 ```
 - if you get "dx tool failed" errors, additionally create the _JAVA_OPTIONS system environment variable and allocate enough java memory.
 ```
-_JAVA_OPTIONS=-Xmx512m
+_JAVA_OPTIONS=-Xmx1024m
 ```
 
 ## FAQ
