@@ -8,7 +8,7 @@ if($FlashDevelop -eq $null){
 $FlashDevelop = $FlashDevelop -replace "uninstall.exe",''
 $sdk = $env:FLEX_HOME
 $airNameSpace = ([xml](get-content $sdk\airsdk.xml)).airSdk.applicationNamespaces.versionMap[0].descriptorNamespace
-$library = $FlashDevelop + "Library"
+#$library = $FlashDevelop + "Library"
 $fdbuild = $FlashDevelop + "Tools\fdbuild\fdbuild.exe"
 $project = ".\Source\Corruption-of-Champions-FD-AIR.as3proj"
 
@@ -39,7 +39,6 @@ function Setup
 	$as3project.project.libraryPaths.ChildNodes.Item(0).path = "lib\bin"
 	$as3project.project.libraryPaths.ChildNodes.Item(1).path = $sdk+"\frameworks\libs\mx"
 	$as3project.project.output.ChildNodes.Item(6).version = ([xml](get-content $sdk\airsdk.xml)).airSdk.applicationNamespaces.versionMap[0].swfVersion
-	$as3project.project.output.ChildNodes.Item(7).minorVersion = "0"
 	$as3project.Save((Resolve-Path $project))
 	
 	BuildSwf
