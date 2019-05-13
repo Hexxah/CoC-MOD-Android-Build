@@ -46,8 +46,6 @@ function Setup
 #Builds the Stuff
 function BuildSwf
 {
-	[Regex]::Replace( $(Get-Content $xml), '(?s)/<versionNumber>.*?</versionNumber>/', ('<versionNumber>'+((${latestVersion}) -split "_")[-1]+'</versionNumber>') ) | Set-Content $xml
-
 	Write-Output "Compiling/Building SWF"
 	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -version "4.6.0; 27.0" -compiler $sdk -notrace -library $library
 	Copy-Item Source\CoC-AIR.swf CoC-AIR.swf
@@ -57,9 +55,17 @@ function BuildSwf
 
 function BuildApk
 {
-    $myXml = [xml](Get-Content $xml)
-    $myxml.application.xmlns = $airNameSpace
-    $myXml.Save((Resolve-Path $xml))
+	#Remove all not numeric value from version and change in form of x.x.x
+	$versionNumber = $latestVersion -split '[^.0-9]'  | ? {$_}
+	if ($versionNumber.count > 1) {
+		$versionNumber = $versionNumber[-1]
+	}    
+    
+    	#sets air namespace and version
+    	$myXml = [xml](Get-Content $xml)
+    	$myxml.application.xmlns = $airNameSpace
+	$myxml.application.versionNumber = [string]$versionNumber
+    	$myXml.Save((Resolve-Path $xml))
 
 	Write-Output "Building Arm APK"
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_arm.apk $xml CoC-AIR.swf icons
