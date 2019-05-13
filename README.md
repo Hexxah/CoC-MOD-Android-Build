@@ -73,3 +73,4 @@ If you would like to help in someway or have any ideas feel free to contact me.
 I have no idea about flash coding but can understand basic code and some languages (Python, Java). I do this on my free time so I might not be able to reply right away.
 
 P.S. Username on COC Discord: Drack
+https://discord.gg/KVPGEM5 
