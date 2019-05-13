@@ -1,4 +1,6 @@
 # Corruption of Champions Mods APK Builder
+# Needed to avoid "Invoke-WebRequest : The request was aborted: Could not create SSL/TLS secure channel."
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $FlashDevelop = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*|Where-Object -p "displayname" -match "flashDevelop").uninstallstring
 if($FlashDevelop -eq $null){
     $FlashDevelop = (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*|Where-Object -p "displayname" -match "flashDevelop").uninstallstring
@@ -47,7 +49,7 @@ function Setup
 function BuildSwf
 {
 	Write-Output "Compiling/Building SWF"
-	&($fdbuild) ".\Source\Corruption-of-Champions-FD-AIR.as3proj" -compiler $sdk -notrace -library $library
+	&($fdbuild) $project -compiler $sdk -notrace #-library $library
 	Copy-Item Source\CoC-AIR.swf CoC-AIR.swf
 	
 	BuildApk
@@ -83,15 +85,11 @@ function BuildApk
 switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Build from Source folder `n4.Build apk using CoC-AIR.swf `n5.Clean the Directory`n") 
 { 
     "1*" {
-		# Needed to avoid "Invoke-WebRequest : The request was aborted: Could not create SSL/TLS secure channel."
-		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Kitteh6660/Corruption-of-Champions-Mod/releases -Headers @{"Accept"="application/json"}
 		$xml='revamp.xml'
 		setup
 	}
     "2*" {
-		# Needed to avoid "Invoke-WebRequest : The request was aborted: Could not create SSL/TLS secure channel."
-		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Ormael7/Corruption-of-Champions/releases -Headers @{"Accept"="application/json"}
 		$xml = 'xianxia.xml'
 		setup
