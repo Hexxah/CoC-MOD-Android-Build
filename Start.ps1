@@ -81,38 +81,76 @@ function BuildApk
 	cp .\icons\Default\* .\icons\ -force
 	exit
 }
-
-switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Build from Source folder `n4.Build apk using CoC-AIR.swf `n5.Clean the Directory`n") 
+#`n6.Export Android Save(.sol)?
+switch -wildcard (Read-Host "What would you like to do `n1.Download and Build Revamp `n2.Download and Build Xianxia `n3.Download and Build EndlessJourney `n4.Build from Source folder `n5.Build apk using CoC-AIR.swf  `n6.Clean the Directory`n")
 { 
-    "1*" {
+    	"1*" {
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Kitteh6660/Corruption-of-Champions-Mod/releases -Headers @{"Accept"="application/json"}
 		$xml='revamp.xml'
 		setup
 	}
-    "2*" {
+    	"2*" {
 		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Ormael7/Corruption-of-Champions/releases -Headers @{"Accept"="application/json"}
 		$xml = 'xianxia.xml'
 		setup
 	}
-    "3*" {
+	"3*" {
+		$latestRelease = Invoke-WebRequest https://api.github.com/repos/Oxdeception/Corruption-of-Champions/releases -Headers @{"Accept"="application/json"}
+		$xml = 'endless.xml'
+		setup
+	}
+    	"4*" {
 		if (!(Test-Path ".\Source")){
-		    Write-Output "Sorry bud missing Source Directory"
+		    Write-Output "Sorry missing Source Directory"
 		    exit
 		}
 		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
-		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
+		$xml = Read-Host "Which XML file to use? (*******.xml)"
 		BuildSwf
 	}
-	"4*" {
+	"5*" {
 		if (!(Test-Path ".\CoC-AIR.swf")){
 		    Write-Output "Missing CoC-AIR.swf"
 		    exit
 		}
 		$latestVersion = Read-Host "Enter a Version Number (eg:1.4.5):"
-		$xml = Read-Host "Which XML file to use? (revamp.xml or xianxia.xml)"
+		$xml = Read-Host "Which XML file to use? (******.xml)"
 		BuildApk
 	}
-	"5*" {
+	<#"6*" {
+		"`nEnable Debugging mode on device and connect to PC".toString()
+		if (Test-Path "Android"){
+			$v= Read-Host "Which version save would you like to export?`n1.Revamp `n2.Xianxia `n3.Endless Journey `n4.Endless Journey `n"
+			if ($v -eq 1){$Android = 'air.com.cocmod'}
+			if ($v -eq 2){$Android = 'air.com.cocxian'}
+			if ($v -eq 3){$Android = 'air.com.coc.EndlessJourney'}
+			if ($v -eq 4){$Android = Read-Host "Enter app id (eg: air.com.coc)"}
+			cd Android
+			"Unlock your phone and select backup".toString()
+			./adb backup -noapk $Android > "backup.txt" 2>&1
+			if(!(Get-Content "backup.txt" -totalcount 1| %{$_ -match "no devices/emulators found"}))
+			{
+				java -jar abe.jar unpack backup.ab backup.tar
+				./7z x -y backup.tar
+				cd ..
+				$dir = 'Android\apps\'+$Android+'\r\'+(($Android) -replace "air.","")+'\Local Store\#SharedObjects'
+				if(Test-Path "Save") {rm -Recurse Save}
+				mv $dir 'Save'
+			}
+			else{
+			cd..
+			"`nYour Phone Could not be found!".toString()}
+			if(Test-Path "Android\app*") {rm -Recurse Android\app*}
+			if(Test-Path "Android\backup*") {rm -Recurse Android\backup**}
+			Start-Sleep -s 5
+							
+			}
+		else{"Could not find Android folder at root. `nDownload Link on Hexxah Github".toString()
+		Start-Sleep -s 5
+		}
+		exit
+		}#>
+	"6*" {
 		Write-Output "Keeping only base files...."
 		if ((Test-Path ".\Source")){Remove-Item -Recurse Source}
 		if ((Test-Path "coc*")){Remove-Item -Recurse coc*}
