@@ -58,7 +58,7 @@ function BuildApk
 {
 	#Remove all not numeric value from version and change in form of x.x.x
 	$versionNumber = $latestVersion -split '[^.0-9]'  | ? {$_}
-	if ($versionNumber.count > 1) {
+	if ($versionNumber.count -gt 1) {
 		$versionNumber = $versionNumber[-1]
 	}    
     
