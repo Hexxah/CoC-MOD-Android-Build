@@ -69,7 +69,7 @@ function BuildApk
     	$myXml.Save((Resolve-Path $xml))
 	
 	#Change Icons based on Build
-	cp .\icons\$xml\* .\icons\ -force
+	cp .\iconlib\$xml\* .\icons\ -force
 	
 	Write-Output "Building Arm APK"
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_arm.apk $xml CoC-AIR.swf icons
@@ -77,7 +77,7 @@ function BuildApk
 	Write-Output "Building x86 APK"
 	java -jar ($sdk+"\lib\adt.jar") -package -target apk-captive-runtime -arch x86 -storetype pkcs12 -keystore cert.p12 -storepass coc CoC_${latestVersion}_x86.apk $xml CoC-AIR.swf icons
 	
-	cp .\icons\Default\* .\icons\ -force
+	cp .\iconlib\Default\* .\icons\ -force
 	exit
 }
 #`n6.Export Android Save(.sol)?
