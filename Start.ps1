@@ -32,6 +32,12 @@ function Setup
 	Move-Item coc\* Source
 	Remove-Item coc,coc.zip
 	
+	BuildSwf
+}
+	
+#Builds the Stuff
+function BuildSwf
+{
 	# Edit xml to include mx swc from sdk ( otherwise gives ScrollControlBase not found error)
 	$as3project = [xml](Get-Content $project)
 	$as3project.project.libraryPaths.ChildNodes.Item(0).path = "lib\bin"
@@ -40,12 +46,6 @@ function Setup
 	$as3project.project.output.ChildNodes.Item(7).minorVersion = "0"
 	$as3project.Save((Resolve-Path $project))
 	
-	BuildSwf
-}
-	
-#Builds the Stuff
-function BuildSwf
-{
 	[Regex]::Replace( $(Get-Content $xml), '(?s)/<versionNumber>.*?</versionNumber>/', ('<versionNumber>'+((${latestVersion}) -split "_")[-1]+'</versionNumber>') ) | Set-Content $xml
 
 	Write-Output "Compiling/Building SWF"
