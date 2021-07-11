@@ -8,13 +8,11 @@
   <initialWindow>
     <title>Corruption of Champions (Xianxia Mod)</title>
     <content>CoC-AIR.swf</content>
-    <systemChrome>standard</systemChrome>
     <transparent>false</transparent>
     <visible>true</visible>
     <fullScreen>true</fullScreen>
     <autoOrients>true</autoOrients>
     <aspectRatio>any</aspectRatio>
-    <renderMode>gpu</renderMode>
   </initialWindow>
   <icon>
     <image29x29>icons/icon_29.png</image29x29>
@@ -23,12 +21,9 @@
     <image144x144>icons/icon_144.png</image144x144>
     <image512x512>icons/icon_512.png</image512x512>
   </icon>
-  <customUpdateUI>false</customUpdateUI>
-  <allowBrowserInvocation>false</allowBrowserInvocation>
   <android>
     <manifestAdditions><![CDATA[<manifest>
 		<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-		<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="19"/>
 	</manifest>]]></manifestAdditions>
   </android>
 </application>
